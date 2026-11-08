@@ -508,9 +508,7 @@ async def docs_reset(cb: CallbackQuery, state: FSMContext):
     await _render_checklist(cb, state)
 
 
-# ---------------------------------------------------------------------------
-# 5. Техническая поддержка
-# ---------------------------------------------------------------------------
+
 
 
 @router.callback_query(F.data == "support")
@@ -539,10 +537,40 @@ async def support_carrier(cb: CallbackQuery):
     )
 
 
-# ---------------------------------------------------------------------------
-# Всё остальное
-# ---------------------------------------------------------------------------
 
+@router.message(F.text == "🧭 Направление")
+async def btn_dir(message: Message, state: FSMContext):
+    await state.clear()
+    items = [(name, f"dir_oc:{code}") for code, (name, _) in COUNTRIES.items()]
+    await message.answer("<b>Шаг 1 из 5.</b> Страна отправления:", reply_markup=choice_kb(items, width=2))
+
+@router.message(F.text == "🧮 Калькулятор")
+async def btn_calc(message: Message, state: FSMContext):
+    await state.clear()
+    items = [(c["name"], f"calc_c:{k}") for k, c in CARRIERS.items()]
+    await message.answer("<b>Калькулятор доставки</b>\nВыберите компанию:", reply_markup=choice_kb(items))
+
+@router.message(F.text == "📦 Отслеживание")
+async def btn_track(message: Message, state: FSMContext):
+    await state.clear()
+    items = [(c["name"], f"trk_c:{k}") for k, c in CARRIERS.items()]
+    await message.answer("<b>Отслеживание посылки</b>\nВыберите логистическую компанию:", reply_markup=choice_kb(items))
+
+@router.message(F.text == "📋 Документы")
+async def btn_docs(message: Message, state: FSMContext):
+    await state.clear()
+    items = [(n, f"doc_c:{c}") for c, (n, _) in COUNTRIES.items()]
+    await message.answer("<b>Необходимые документы</b>\nСтрана назначения:", reply_markup=choice_kb(items, width=2))
+
+@router.message(F.text == "💬 Поддержка")
+async def btn_support(message: Message, state: FSMContext):
+    await state.clear()
+    items = [(c["name"], f"sup:{k}") for k, c in CARRIERS.items()]
+    await message.answer("<b>Техническая поддержка</b>\nВыберите перевозчика:", reply_markup=choice_kb(items))
+
+@router.message(F.text == "ℹ️ Помощь")
+async def btn_help(message: Message):
+    await message.answer("Команды:\n/start или /menu — главное меню\n/cancel — отменить текущее действие\n\n" + DATA_NOTE)
 
 @router.message()
 async def fallback(message: Message):
