@@ -17,6 +17,7 @@ import math
 import os
 import re
 
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -118,6 +119,17 @@ def menu_kb() -> InlineKeyboardMarkup:
     b.button(text="🛟 Техническая поддержка", callback_data="support")
     b.adjust(1)
     return b.as_markup()
+
+
+def reply_main_kb() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text="🧭 Направление"), KeyboardButton(text="🧮 Калькулятор")],
+            [KeyboardButton(text="📦 Отслеживание"), KeyboardButton(text="📋 Документы")],
+            [KeyboardButton(text="💬 Поддержка"), KeyboardButton(text="ℹ️ Помощь")]
+        ],
+        resize_keyboard=True
+    )
 
 
 def choice_kb(items, back="menu", width=1, extra_urls=None) -> InlineKeyboardMarkup:
